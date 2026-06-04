@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(py --version)",
+      "Bash(py -m venv venv)",
+      "Bash(venv/Scripts/pip install *)",
+      "Bash(venv/Scripts/django-admin startproject *)",
+      "Bash(venv/Scripts/python manage.py startapp users)",
+      "Bash(venv/Scripts/python manage.py startapp papers)",
+      "Bash(venv/Scripts/python manage.py startapp projects)",
+      "Bash(venv/Scripts/python manage.py startapp favorites)",
+      "Bash(venv/Scripts/python manage.py startapp analytics)",
+      "Bash(venv/Scripts/python manage.py makemigrations)",
+      "Bash(venv/Scripts/python manage.py migrate)",
+      "Bash(venv/Scripts/python -c ' *)",
+      "Bash(venv/Scripts/python manage.py check)",
+      "Bash(npx vite *)",
+      "Bash(venv/Scripts/python manage.py makemigrations users)"
+    ]
+  }
+}
