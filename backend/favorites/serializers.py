@@ -1,45 +1,18 @@
 from rest_framework import serializers
-from django.contrib.contenttypes.models import ContentType
 from .models import Favorite
-from papers.serializers import PaperListSerializer
-from projects.serializers import ProjectListSerializer
+from movies.serializers import MovieListSerializer
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
-    content_type_name = serializers.SerializerMethodField()
-    content_object_data = serializers.SerializerMethodField()
+    movie_detail = MovieListSerializer(source='movie', read_only=True)
 
     class Meta:
         model = Favorite
-        fields = ['id', 'content_type', 'object_id', 'content_type_name', 'content_object_data', 'created_at']
+        fields = ['id', 'movie', 'movie_detail', 'created_at']
         read_only_fields = ['id', 'created_at']
 
-    def get_content_type_name(self, obj):
-        return obj.content_type.model
-
-    def get_content_object_data(self, obj):
-        if obj.content_type.model == 'paper':
-            return PaperListSerializer(obj.content_object).data
-        elif obj.content_type.model == 'researchproject':
-            return ProjectListSerializer(obj.content_object).data
-        return None
-
-
-class FavoriteCreateSerializer(serializers.Serializer):
-    type = serializers.ChoiceField(choices=['paper', 'project'])
-    object_id = serializers.IntegerField()
-
-    def validate(self, attrs):
-        type_map = {
-            'paper': 'paper',
-            'project': 'researchproject',
-        }
-        model_name = type_map[attrs['type']]
-        try:
-            ct = ContentType.objects.get(model=model_name)
-            model_class = ct.model_class()
-            model_class.objects.get(pk=attrs['object_id'])
-        except (ContentType.DoesNotExist, model_class.DoesNotExist):
-            raise serializers.ValidationError('目标对象不存在')
-        attrs['content_type'] = ct
-        return attrs
+    def validate_movie(self, value):
+        user = self.context['request'].user
+        if Favorite.objects.filter(user=user, movie=value).exists():
+            raise serializers.ValidationError('已经收藏过该电影')
+        return value

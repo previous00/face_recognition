@@ -6,41 +6,31 @@ User = get_user_model()
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
-    password_confirm = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'password_confirm']
+        fields = ['username', 'password', 'password2', 'email', 'nickname']
 
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({'password_confirm': '两次密码不一致'})
-        return attrs
+    def validate(self, data):
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError({'password2': '两次密码不一致'})
+        return data
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
+        validated_data.pop('password2')
         user = User.objects.create_user(**validated_data)
         return user
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'avatar', 'institution',
-                  'research_field', 'bio', 'phone', 'created_at', 'updated_at']
-        read_only_fields = ['id', 'username', 'role', 'created_at', 'updated_at']
+        fields = ['id', 'username', 'email', 'nickname', 'avatar', 'bio', 'is_staff']
+        read_only_fields = ['id', 'username', 'is_staff']
 
 
-class UserListSerializer(serializers.ModelSerializer):
+class UserBriefSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'institution',
-                  'is_active', 'date_joined']
-
-
-class UserAdminSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'role', 'institution',
-                  'research_field', 'is_active', 'date_joined']
-        read_only_fields = ['id', 'username', 'date_joined']
+        fields = ['id', 'username', 'nickname', 'avatar']

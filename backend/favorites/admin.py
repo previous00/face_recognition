@@ -4,5 +4,5 @@ from .models import Favorite
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ['user', 'content_type', 'object_id', 'created_at']
-    list_filter = ['content_type']
+    list_display = ['user', 'movie', 'created_at']
+    list_filter = ['created_at']

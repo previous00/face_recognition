@@ -1,22 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm *)",
-      "Bash(py --version)",
-      "Bash(py -m venv venv)",
-      "Bash(venv/Scripts/pip install *)",
-      "Bash(venv/Scripts/django-admin startproject *)",
-      "Bash(venv/Scripts/python manage.py startapp users)",
-      "Bash(venv/Scripts/python manage.py startapp papers)",
-      "Bash(venv/Scripts/python manage.py startapp projects)",
-      "Bash(venv/Scripts/python manage.py startapp favorites)",
-      "Bash(venv/Scripts/python manage.py startapp analytics)",
-      "Bash(venv/Scripts/python manage.py makemigrations)",
-      "Bash(venv/Scripts/python manage.py migrate)",
-      "Bash(venv/Scripts/python -c ' *)",
-      "Bash(venv/Scripts/python manage.py check)",
+      "Bash(python -m venv venv)",
+      "Bash(where python *)",
+      "Bash(py *)",
+      "Bash(npx create-vite@latest frontend -- --template vue)",
+      "Bash(npm install *)",
+      "Bash(rm -rf \"D:/一面千识/3/frontend\")",
+      "Bash(npx create-vite@latest frontend -- --template vue-ts)",
       "Bash(npx vite *)",
-      "Bash(venv/Scripts/python manage.py makemigrations users)"
+      "Bash(pkill -f \"manage.py runserver\")",
+      "Bash(curl *)"
     ]
   }
 }

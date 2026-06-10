@@ -1,43 +1,27 @@
 import axios from 'axios'
-import router from '@/router'
+import { useUserStore } from '../stores/user'
+import router from '../router'
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 10000,
+  timeout: 10000
 })
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+api.interceptors.request.use(config => {
+  const userStore = useUserStore()
+  if (userStore.token) {
+    config.headers.Authorization = `Bearer ${userStore.token}`
   }
   return config
 })
 
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-      const refreshToken = localStorage.getItem('refresh_token')
-      if (refreshToken) {
-        try {
-          const res = await axios.post('/api/auth/refresh/', { refresh: refreshToken })
-          localStorage.setItem('access_token', res.data.access)
-          if (res.data.refresh) {
-            localStorage.setItem('refresh_token', res.data.refresh)
-          }
-          originalRequest.headers.Authorization = `Bearer ${res.data.access}`
-          return api(originalRequest)
-        } catch {
-          localStorage.removeItem('access_token')
-          localStorage.removeItem('refresh_token')
-          router.push('/login')
-        }
-      } else {
-        router.push('/login')
-      }
+  response => response,
+  error => {
+    if (error.response && error.response.status === 401) {
+      const userStore = useUserStore()
+      userStore.logout()
+      router.push('/login')
     }
     return Promise.reject(error)
   }
